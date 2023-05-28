@@ -1,0 +1,21 @@
+{
+	"name": "ds_Json_api_dummy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_Http_Api",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Fontes Externas"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

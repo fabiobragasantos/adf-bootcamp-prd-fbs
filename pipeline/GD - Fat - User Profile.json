@@ -1,0 +1,34 @@
+{
+	"name": "GD - Fat - User Profile",
+	"properties": {
+		"activities": [
+			{
+				"name": "NTB - Tratamento - Fat User",
+				"description": "Executa um notebook para tratar os dados na camada Gold.",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/gold/user_profile/fat/fat_user"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_adb_bootcamp_prd",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "2.1 Gold/User Profile/Fat"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-28T01:05:57Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

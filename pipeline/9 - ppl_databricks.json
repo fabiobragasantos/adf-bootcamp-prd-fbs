@@ -1,0 +1,44 @@
+{
+	"name": "9 - ppl_databricks",
+	"properties": {
+		"activities": [
+			{
+				"name": "Notebook1",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/fabio.br.santos@outlook.com/test_adf",
+					"baseParameters": {
+						"nome": {
+							"value": "@pipeline().parameters.p_nome",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_adb_bootcamp_prd",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"p_nome": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "study activities"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-14T20:05:59Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

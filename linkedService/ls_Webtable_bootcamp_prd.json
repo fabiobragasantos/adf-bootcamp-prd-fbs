@@ -1,0 +1,16 @@
+{
+	"name": "ls_Webtable_bootcamp_prd",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "Web",
+		"typeProperties": {
+			"url": "https://www.dieese.org.br/analisecestabasica/salarioMinimo.html",
+			"authenticationType": "Anonymous"
+		},
+		"connectVia": {
+			"referenceName": "integrationRuntime-Self-Hosted",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

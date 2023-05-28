@@ -1,0 +1,19 @@
+{
+	"name": "ds_WebTable_salario_minimo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_Webtable_bootcamp_prd",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Fontes Externas"
+		},
+		"annotations": [],
+		"type": "WebTable",
+		"schema": [],
+		"typeProperties": {
+			"index": 0
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
