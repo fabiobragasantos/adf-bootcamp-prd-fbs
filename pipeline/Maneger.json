@@ -236,6 +236,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebookPath": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/utility/start_cluster"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_adb_bootcamp_prd",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
