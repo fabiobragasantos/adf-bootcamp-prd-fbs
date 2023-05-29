@@ -1,0 +1,2367 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-bootcamp-prd-fbs"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/9 - ppl_databricks')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Notebook1",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/fabio.br.santos@outlook.com/test_adf",
+							"baseParameters": {
+								"nome": {
+									"value": "@pipeline().parameters.p_nome",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_adb_bootcamp_prd",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_nome": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "study activities"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-14T20:05:59Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GD - Dim - User Profile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "NTB - Tratamento - Dim Address",
+						"description": "Executa um notebook para tratar os dados na camada Gold.",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/gold/user_profile/dim/dim_address"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_adb_bootcamp_prd",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "NTB - Tratamento - Dim Age",
+						"description": "Executa um notebook para tratar os dados na camada Gold.",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/gold/user_profile/dim/dim_age"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_adb_bootcamp_prd",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "NTB - Tratamento - Dim Gender",
+						"description": "Executa um notebook para tratar os dados na camada Gold.",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/gold/user_profile/dim/dim_gender"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_adb_bootcamp_prd",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "NTB - Tratamento - Dim Profession",
+						"description": "Executa um notebook para tratar os dados na camada Gold.",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/gold/user_profile/dim/dim_profession"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_adb_bootcamp_prd",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"concurrency": 30,
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_container_destino": {
+						"type": "string",
+						"defaultValue": "landing"
+					},
+					"p_diretorio_destino": {
+						"type": "string",
+						"defaultValue": "web_api/dummy_js"
+					},
+					"p_data_particao": {
+						"type": "string"
+					},
+					"p_colecao_origem": {
+						"type": "string",
+						"defaultValue": "users"
+					},
+					"p_formato_data_particao": {
+						"type": "string",
+						"defaultValue": "D"
+					},
+					"p_tipo_carga": {
+						"type": "string",
+						"defaultValue": "I"
+					},
+					"p_rb_etapa_ingestao": {
+						"type": "string"
+					},
+					"p_data_inicio_carga": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"v_data_particao": {
+						"type": "String"
+					},
+					"v_diretorio_destino": {
+						"type": "String"
+					},
+					"v_arquivo_destino": {
+						"type": "String"
+					},
+					"v_diretorio_completo": {
+						"type": "String"
+					},
+					"v_rascunho_nome_tabela_delta": {
+						"type": "String"
+					},
+					"v_filtro_origem": {
+						"type": "String"
+					},
+					"v_selecao_coluna": {
+						"type": "String"
+					},
+					"v_etapa_bronze": {
+						"type": "Boolean"
+					}
+				},
+				"folder": {
+					"name": "2.1 Gold/User Profile/Dim"
+				},
+				"annotations": [
+					"@pipeline().parameters.p_colecao_origem"
+				],
+				"lastPublishTime": "2023-05-28T01:05:57Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GD - Fat - User Profile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "NTB - Tratamento - Fat User",
+						"description": "Executa um notebook para tratar os dados na camada Gold.",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/gold/user_profile/fat/fat_user"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_adb_bootcamp_prd",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "2.1 Gold/User Profile/Fat"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-28T01:05:57Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RB - Ingestao Generica - Dummy JS - Web API')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SVB - Definir data_particao",
+						"description": "Atribui um valor à variável [v_data_particao]. ",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_data_particao",
+							"value": {
+								"value": "@convertFromUtc(utcnow(), 'E. South America Standard Time', 'yyyy/MM/dd')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SVB - Definir diretorio_completo",
+						"description": "Atribui um valor à variável [v_diretorio_completo], a partir da concatenação do diretório destino, da coleção de origem e da data de partição.",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "SVB - Definir diretorio_destino",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SVB - Definir data_particao",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_diretorio_completo",
+							"value": {
+								"value": "@toLower(\n    concat(\n        variables('v_diretorio_destino'),\n        '/', \n        pipeline().parameters.p_colecao_origem,\n        if(\n            empty(variables('v_data_particao')),\n            '',\n            concat('/', variables('v_data_particao'))\n        )\n    )\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SVB - Definir arquivo_destino",
+						"description": "Atribui um valor à variável [v_arquivo_destino], a partir da concatenação da coleção de origem e da data de partição.",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "SVB - Definir data_particao",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_arquivo_destino",
+							"value": {
+								"value": "@toLower(\n    concat(\n        pipeline().parameters.p_colecao_origem,\n        '__', \n        if(\n            empty(variables('v_data_particao')),\n            formatDateTime(utcNow(), 'yyyyMMdd'),\n            replace(variables('v_data_particao'), '/', '')\n        )\n    )\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SVB - Definir diretorio_destino",
+						"description": "Atribui um valor à variável [v_diretorio_destino]. \nSe o parâmetro [p_diretorio_destino] estiver preenchido, atribui o valor dele, senão, atribui um valor default.",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_diretorio_destino",
+							"value": {
+								"value": "@toLower(\n    if(\n        empty(pipeline().parameters.p_diretorio_destino),\n        'web_api/dummy_js',\n        pipeline().parameters.p_diretorio_destino\n    )\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SVB - Definir rascunho_nome_tabela_delta",
+						"description": "Atribui um valor à variável [v_rascunho_nome_tabela_delta], a partir da concatenação do diretório de destino e da coleção de origem.",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "SVB - Definir diretorio_destino",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_rascunho_nome_tabela_delta",
+							"value": {
+								"value": "@toLower(\n    concat(\n        variables('v_diretorio_destino'),\n        '/',\n        pipeline().parameters.p_colecao_origem\n    )\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "NTB - Ingestao - Bronze",
+						"description": "Executa um notebook genérico para ingestão da coleção na camada Bronze.",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "CPD - Ingestao - Raw",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(\n       '/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/bronze/',\n        variables('v_diretorio_destino'), '/generico_json'\n    )",
+								"type": "Expression"
+							},
+							"baseParameters": {
+								"pn_diretorio_raw": {
+									"value": "@variables('v_diretorio_completo')",
+									"type": "Expression"
+								},
+								"pn_data_particao": {
+									"value": "@variables('v_data_particao')",
+									"type": "Expression"
+								},
+								"pn_arquivo": {
+									"value": "@variables('v_arquivo_destino')",
+									"type": "Expression"
+								},
+								"pn_rascunho_nome_tabela_delta": {
+									"value": "@variables('v_rascunho_nome_tabela_delta')",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_adb_bootcamp_prd",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "CPD - Ingestao - Raw",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "SVB - Definir arquivo_destino",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SVB - Definir diretorio_completo",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SVB - Definir rascunho_nome_tabela_delta",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 3,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"parallelCopies": 2
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_Json_api_dummy",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_Json_dls",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_container": {
+										"value": "@pipeline().parameters.p_container_destino",
+										"type": "Expression"
+									},
+									"p_diretorio": {
+										"value": "@variables('v_diretorio_completo')",
+										"type": "Expression"
+									},
+									"p_arquivo": {
+										"value": "@variables('v_arquivo_destino')",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"concurrency": 30,
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_container_destino": {
+						"type": "string",
+						"defaultValue": "raw"
+					},
+					"p_diretorio_destino": {
+						"type": "string",
+						"defaultValue": "web_api/dummy_js"
+					},
+					"p_data_particao": {
+						"type": "string"
+					},
+					"p_colecao_origem": {
+						"type": "string",
+						"defaultValue": "users"
+					},
+					"p_formato_data_particao": {
+						"type": "string",
+						"defaultValue": "D"
+					},
+					"p_tipo_carga": {
+						"type": "string",
+						"defaultValue": "I"
+					},
+					"p_rb_etapa_ingestao": {
+						"type": "string"
+					},
+					"p_data_inicio_carga": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"v_data_particao": {
+						"type": "String"
+					},
+					"v_diretorio_destino": {
+						"type": "String"
+					},
+					"v_arquivo_destino": {
+						"type": "String"
+					},
+					"v_diretorio_completo": {
+						"type": "String"
+					},
+					"v_rascunho_nome_tabela_delta": {
+						"type": "String"
+					},
+					"v_filtro_origem": {
+						"type": "String"
+					},
+					"v_selecao_coluna": {
+						"type": "String"
+					},
+					"v_etapa_bronze": {
+						"type": "Boolean"
+					}
+				},
+				"folder": {
+					"name": "2.3 Raw e Bronze/Web API/Dummy JS"
+				},
+				"annotations": [
+					"@pipeline().parameters.p_colecao_origem"
+				],
+				"lastPublishTime": "2023-05-27T21:40:02Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SV - User App - Web Application - Customer Success')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "NTB - Tratamento - Silver",
+						"description": "Executa um notebook para tratar os dados na camada Silver.",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 2,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/silver/customer_sucess/web_application/users_app"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_adb_bootcamp_prd",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"concurrency": 30,
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_container_destino": {
+						"type": "string",
+						"defaultValue": "landing"
+					},
+					"p_diretorio_destino": {
+						"type": "string",
+						"defaultValue": "web_api/dummy_js"
+					},
+					"p_data_particao": {
+						"type": "string"
+					},
+					"p_colecao_origem": {
+						"type": "string",
+						"defaultValue": "users"
+					},
+					"p_formato_data_particao": {
+						"type": "string",
+						"defaultValue": "D"
+					},
+					"p_tipo_carga": {
+						"type": "string",
+						"defaultValue": "I"
+					},
+					"p_rb_etapa_ingestao": {
+						"type": "string"
+					},
+					"p_data_inicio_carga": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"v_data_particao": {
+						"type": "String"
+					},
+					"v_diretorio_destino": {
+						"type": "String"
+					},
+					"v_arquivo_destino": {
+						"type": "String"
+					},
+					"v_diretorio_completo": {
+						"type": "String"
+					},
+					"v_rascunho_nome_tabela_delta": {
+						"type": "String"
+					},
+					"v_filtro_origem": {
+						"type": "String"
+					},
+					"v_selecao_coluna": {
+						"type": "String"
+					},
+					"v_etapa_bronze": {
+						"type": "Boolean"
+					}
+				},
+				"folder": {
+					"name": "2.2 Silver/Customer Sucess/Web Application"
+				},
+				"annotations": [
+					"@pipeline().parameters.p_colecao_origem"
+				],
+				"lastPublishTime": "2023-05-28T01:00:06Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SV-U - Processo Generico - Silver')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "NTB - Generico - Silver",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": {
+								"value": "@concat(\n    if(\n        endswith(\n            trim(pipeline().parameters.p_caminho_raiz_notebook),\n            '/'\n        ),\n        trim(pipeline().parameters.p_caminho_raiz_notebook),\n        concat(trim(pipeline().parameters.p_caminho_raiz_notebook),'/')\n    ),\n    if(\n        startswith(\n            trim(pipeline().parameters.p_caminho_notebook),\n            '/'\n        ),\n        substring(\n            trim(pipeline().parameters.p_caminho_notebook),\n            1,\n            sub(length(pipeline().parameters.p_caminho_notebook),1)\n        ),\n        trim(pipeline().parameters.p_caminho_notebook)\n    ),\n    if(\n        endswith(\n            trim(pipeline().parameters.p_caminho_notebook), \n            '/'\n        ),\n        if(\n            startswith(\n                trim(pipeline().parameters.p_nome_notebook), \n                '/'\n            ),\n            substring(\n                trim(pipeline().parameters.p_nome_notebook),\n                1,\n                sub(length(pipeline().parameters.p_nome_notebook),1)\n            ),\n            trim(pipeline().parameters.p_nome_notebook)\n        ), \n        if(\n            startswith(\n                trim(pipeline().parameters.p_nome_notebook), \n                '/'\n            ),\n            trim(pipeline().parameters.p_nome_notebook),\n            concat('/', trim(pipeline().parameters.p_nome_notebook))\n        )\n    )\n)",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_adb_bootcamp_prd",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_caminho_raiz_notebook": {
+						"type": "string",
+						"defaultValue": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/silver"
+					},
+					"p_caminho_notebook": {
+						"type": "string"
+					},
+					"p_nome_notebook": {
+						"type": "string"
+					},
+					"p_dt_ini_execucao": {
+						"type": "string"
+					},
+					"p_chave_entidade": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"v_erro_mensagem": {
+						"type": "String"
+					},
+					"v_erro_target": {
+						"type": "String"
+					},
+					"v_data_inicio_carga": {
+						"type": "String"
+					},
+					"v_teste": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "2.2 Silver/1 - General"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-17T02:55:57Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_WebTable_salario_minimo')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_Webtable_bootcamp_prd",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Fontes Externas"
+				},
+				"annotations": [],
+				"type": "WebTable",
+				"schema": [],
+				"typeProperties": {
+					"index": 0
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sql_azure')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_AzureSql_bootcamp_prd",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"p_esquema": {
+						"type": "string"
+					},
+					"p_tabela": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().p_esquema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().p_tabela",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_deltatable_databricks')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adb_delta_bootcamp_prd",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"p_esquema": {
+						"type": "string"
+					},
+					"p_tabela": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Databricks"
+				},
+				"annotations": [],
+				"type": "AzureDatabricksDeltaLakeDataset",
+				"typeProperties": {
+					"database": {
+						"value": "@dataset().p_esquema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().p_tabela",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/0 - ppl_web_scraping')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CPD - Ingestao Raw",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "WebSource"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Período",
+											"type": "String"
+										},
+										"sink": {
+											"name": "periodo",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Salário mínimo nominal",
+											"type": "String"
+										},
+										"sink": {
+											"name": "salario minimo nominal",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Salário mínimo necessário",
+											"type": "String"
+										},
+										"sink": {
+											"name": "salario minimo necessario",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_WebTable_salario_minimo",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_text_dls",
+								"type": "DatasetReference",
+								"parameters": {
+									"p_container": "raw",
+									"p_diretorio": "web_scraping/salario_minimo",
+									"p_arquivo": "valores_salario_minimo",
+									"p_delimitador": ","
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "study activities"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-10T00:31:01Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_WebTable_salario_minimo')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GD - User Profile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PPL - Dim",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "GD - Dim - User Profile",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PPL - Fat",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "PPL - Dim",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "GD - Fat - User Profile",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "2.1 Gold/User Profile"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-17T02:30:29Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/GD - Dim - User Profile')]",
+				"[concat(variables('factoryId'), '/pipelines/GD - Fat - User Profile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RB-U - Ingestao Generica - SQL Server')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SVB - Define data_particao",
+						"description": "Atribui um valor à variável [v_data_particao]. Se o parâmetro [p_data_particao] estiver preenchido, atribui o seu valor à [v_data_particao], senão, atribui a data atual na formatação definida pelo parâmetro [p_formato_data_particao], ou deixa em branco.",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_data_particao",
+							"value": {
+								"value": "@convertFromUtc(utcnow(), 'E. South America Standard Time', 'yyyy/MM/dd')\n           ",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SVB - Define diretorio_completo",
+						"description": "Atribui um valor à variável [v_diretorio_completo], a partir da concatenação do diretório destino, da tabela de origem e da data de partição.",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "SVB - Define diretorio_destino",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SVB - Define data_particao",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_diretorio_completo",
+							"value": {
+								"value": "@toLower(concat(\n    variables('v_diretorio_destino'),\n    '/', \n    pipeline().parameters.p_tabela_origem,\n    if(\n        empty(variables('v_data_particao')),\n        '',\n        concat('/', variables('v_data_particao'))\n    )\n))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SVB - Define arquivo_destino",
+						"description": "Atribui um valor à variável [v_arquivo_destino], a partir da concatenação da tabela de origem e da data de partição.",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "SVB - Define data_particao",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_arquivo_destino",
+							"value": {
+								"value": "@toLower(concat(\n    pipeline().parameters.p_tabela_origem,\n    '__', \n    if(\n        empty(variables('v_data_particao')),\n        formatDateTime(utcNow(), 'yyyyMMdd'),\n        replace(variables('v_data_particao'), '/', '')\n    )\n))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SVB - Define diretorio_destino",
+						"description": "Atribui um valor à variável [v_diretorio_destino]. Se o parâmetro [p_diretorio_destino] estiver preenchido, atribui o valor dele, senão, atribui um valor default. E concatena com o esquema de origem.",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_diretorio_destino",
+							"value": {
+								"value": "@toLower(concat(\n    if(\n        empty(pipeline().parameters.p_diretorio_destino),\n        'sqlserver/core_financeiro',\n        pipeline().parameters.p_diretorio_destino\n    ),\n    '/',\n    pipeline().parameters.p_esquema_origem\n))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SVB - Define rascunho_nome_tabela_delta",
+						"description": "Atribui um valor à variável [v_rascunho_nome_tabela_delta], a partir da concatenação do diretório de destino e da coleção de origem.",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "SVB - Define diretorio_destino",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_rascunho_nome_tabela_delta",
+							"value": {
+								"value": "@toLower(concat(\n    variables('v_diretorio_destino'),\n    '/',\n    pipeline().parameters.p_tabela_origem\n))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SVB - Define Select de Origem Base",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_select_origem",
+							"value": {
+								"value": "@if(\n    empty(pipeline().parameters.p_select_origem), \n    concat(\n        'SELECT * FROM ', \n        pipeline().parameters.p_esquema_origem, '.',\n        pipeline().parameters.p_tabela_origem, ' WHERE 1=1 '\n    ),\n    pipeline().parameters.p_select_origem\n)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "IFC - Etapa Ingestao Bronze e Dados Raw OK",
+						"description": "Para ser True o parâmetro \"p_etapa_ingestao\" deve conter \"B\" de bronze ou estar vazio ou com \".\". E também o retorno da variável \"v_etapa_bronze\" deve ser True.",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "IFC - Etapa Ingestao RAW",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@and(\n    or(\n        or(\n            empty(pipeline().parameters.p_rb_etapa_ingestao), \n            equals(pipeline().parameters.p_rb_etapa_ingestao,'.')\n        ),\n        contains(pipeline().parameters.p_rb_etapa_ingestao,'B')\n    ),\n    variables('v_etapa_bronze')\n)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "NTB - Ingere na Bronze",
+									"description": "Executa um notebook genérico para ingestão de tabela SQL na camada Bronze.",
+									"type": "DatabricksNotebook",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 10,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": {
+											"value": "@concat(\n    '/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/bronze/',\n    pipeline().parameters.p_diretorio_destino,\n    '/curinga_core'\n)",
+											"type": "Expression"
+										},
+										"baseParameters": {
+											"pn_diretorio_raw": {
+												"value": "@variables('v_diretorio_completo')",
+												"type": "Expression"
+											},
+											"pn_rascunho_nome_tabela_delta": {
+												"value": "@variables('v_rascunho_nome_tabela_delta')",
+												"type": "Expression"
+											},
+											"pn_data_particao": {
+												"value": "@variables('v_data_particao')",
+												"type": "Expression"
+											},
+											"pn_arquivo": {
+												"value": "@variables('v_arquivo_destino')",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_adb_bootcamp_prd",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "IFC - Etapa Ingestao RAW",
+						"description": "Para ser True o parâmetro \"p_etapa_ingestao\" deve conter \"R\" de bronze ou estar vazio ou com \".\".",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "SVB - Define arquivo_destino",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SVB - Define diretorio_completo",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SVB - Define rascunho_nome_tabela_delta",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "SVB - Define Select de Origem Base",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@or(\n    or(\n        empty(pipeline().parameters.p_rb_etapa_ingestao), \n        equals(pipeline().parameters.p_rb_etapa_ingestao,'.')\n    ),\n    contains(pipeline().parameters.p_rb_etapa_ingestao,'R')\n)",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "SVB - F - Define Flag Etapa Bronze",
+									"description": "Infere True.",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "v_etapa_bronze",
+										"value": true
+									}
+								}
+							],
+							"ifTrueActivities": [
+								{
+									"name": "CPD - Ingere Tabela na Raw",
+									"description": "Executa a cópia da tabela do SQL Server para a cama Raw do Data Lake.",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 2,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@variables('v_select_origem')",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_sql_azure",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_esquema": {
+													"value": "@pipeline().parameters.p_esquema_origem",
+													"type": "Expression"
+												},
+												"p_tabela": {
+													"value": "@pipeline().parameters.p_tabela_origem",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_parquet_dls",
+											"type": "DatasetReference",
+											"parameters": {
+												"p_container": {
+													"value": "@pipeline().parameters.p_container_destino",
+													"type": "Expression"
+												},
+												"p_diretorio": {
+													"value": "@variables('v_diretorio_completo')",
+													"type": "Expression"
+												},
+												"p_arquivo": {
+													"value": "@variables('v_arquivo_destino')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "SVB - T - Define Flag Etapa Bronze",
+									"description": "Se retornar linhas copiadas True, senão False.",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "CPD - Ingere Tabela na Raw",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "v_etapa_bronze",
+										"value": {
+											"value": "@if(\n    greater(activity('CPD - Ingere Tabela na Raw').output.rowsCopied, 0),\n    true,\n    false\n)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"concurrency": 30,
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_container_destino": {
+						"type": "string",
+						"defaultValue": "raw"
+					},
+					"p_diretorio_destino": {
+						"type": "string",
+						"defaultValue": "sqlserver/core_financeiro"
+					},
+					"p_data_particao": {
+						"type": "string"
+					},
+					"p_esquema_origem": {
+						"type": "string",
+						"defaultValue": "transacao"
+					},
+					"p_tabela_origem": {
+						"type": "string",
+						"defaultValue": "status_conta"
+					},
+					"p_select_origem": {
+						"type": "string",
+						"defaultValue": "select id_status_conta, ds_status_conta from transacao.status_conta"
+					},
+					"p_data_inicio_carga": {
+						"type": "string"
+					},
+					"p_rb_etapa_ingestao": {
+						"type": "string",
+						"defaultValue": "RB"
+					},
+					"p_dt_inicio_execucao": {
+						"type": "string"
+					},
+					"p_chave_entidade": {
+						"type": "string",
+						"defaultValue": "sql_server.core_financeiro.status_conta"
+					}
+				},
+				"variables": {
+					"v_data_particao": {
+						"type": "String"
+					},
+					"v_diretorio_destino": {
+						"type": "String"
+					},
+					"v_arquivo_destino": {
+						"type": "String"
+					},
+					"v_diretorio_completo": {
+						"type": "String"
+					},
+					"v_rascunho_nome_tabela_delta": {
+						"type": "String"
+					},
+					"v_select_origem": {
+						"type": "String"
+					},
+					"v_etapa_bronze": {
+						"type": "Boolean"
+					}
+				},
+				"folder": {
+					"name": "2.3 Raw e Bronze/SQL Server/Core Financeiro/1 - Unit"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-17T02:40:15Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_sql_azure')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SV-G - Processo Total - Economico_financeiro - Cliente e Conta')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FHC - Itera os Notebooks das tabelas",
+						"description": "Itera sobre a variável [lista_notebooks] para executar a ingestão Silver de cada tabela.",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "FLT - Filtra Chave Entidade",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('FLT - Filtra Chave Entidade').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 10,
+							"activities": [
+								{
+									"name": "PPL - Ingestao Generica",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "SV-U - Processo Generico - Silver",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"p_caminho_raiz_notebook": {
+												"value": "@pipeline().parameters.p_caminho_raiz_notebook",
+												"type": "Expression"
+											},
+											"p_caminho_notebook": {
+												"value": "@pipeline().parameters.p_dominio",
+												"type": "Expression"
+											},
+											"p_nome_notebook": {
+												"value": "@json(item().parametro).notebook",
+												"type": "Expression"
+											},
+											"p_dt_ini_execucao": {
+												"value": "@convertFromUtc(utcnow(), 'E. South America Standard Time', 'yyyy-MM-dd HH:mm:ss')",
+												"type": "Expression"
+											},
+											"p_chave_entidade": {
+												"value": "@item().chave_entidade",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "FLT - Filtra Chave Entidade",
+						"description": "Utiliza o parâmetro \"p_sv_dominio_tema_entidade\" para decidir quais entidades serão carregadas.",
+						"type": "Filter",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.p_dados_orquestrador",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@if(\n    or(\n        empty(pipeline().parameters.p_sv_dominio_tema_entidade),\n        equals(pipeline().parameters.p_sv_dominio_tema_entidade, '.')\n    ),\n    true,\n    startswith(\n        toLower(trim(item().chave_entidade)), \n        concat(\n            replace(toLower(pipeline().parameters.p_dominio),'/','.'),\n            '.',\n            replace(replace(toLower(pipeline().parameters.p_sv_dominio_tema_entidade),'[','' ),']','')                \n        )\n    )\n)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_caminho_raiz_notebook": {
+						"type": "string",
+						"defaultValue": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/silver/"
+					},
+					"p_dominio": {
+						"type": "string",
+						"defaultValue": "cliente_conta/perfil_financeiro"
+					},
+					"p_dados_orquestrador": {
+						"type": "array"
+					},
+					"p_sv_dominio_tema_entidade": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"v_data_inicio_carga": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "2.2 Silver/Cliente e Conta/Perfil e Financeiro/0 - Group"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-17T02:55:58Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/SV-U - Processo Generico - Silver')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/8 - ppl_orquestrador')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "scraping",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "0 - ppl_web_scraping",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "api",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "scraping",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "1 - ppl_copy_api",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "study activities"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-14T17:29:31Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/0 - ppl_web_scraping')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MN - Layers')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PPL - Raw Bronze",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "RB - Ingestao Generica - Dummy JS - Web API",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"p_container_destino": "raw"
+							}
+						}
+					},
+					{
+						"name": "PPL - Silver",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "PPL - Raw Bronze",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "SV - User App - Web Application - Customer Success",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "PPL - Gold",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "PPL - Silver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "GD - User Profile",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "0 - Main"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-21T21:33:29Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/RB - Ingestao Generica - Dummy JS - Web API')]",
+				"[concat(variables('factoryId'), '/pipelines/SV - User App - Web Application - Customer Success')]",
+				"[concat(variables('factoryId'), '/pipelines/GD - User Profile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RB-G - Processo Generico - Raw e Bronze')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FCH - Itera sobre a Ingestao de Tabelas",
+						"description": "Itera sobre o retorno da lookup para executar a ingestão Raw e Bronze de cada tabela.",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "FLT - Filtra Chave Entidade",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('FLT - Filtra Chave Entidade').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 30,
+							"activities": [
+								{
+									"name": "PPL - Ingestao - Core - SqlServer",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "SVB - Define data inicio carga",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "RB-U - Ingestao Generica - SQL Server",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"p_container_destino": {
+												"value": "@json(item().parametro).container_destino",
+												"type": "Expression"
+											},
+											"p_diretorio_destino": {
+												"value": "@json(item().parametro).diretorio_destino",
+												"type": "Expression"
+											},
+											"p_data_particao": {
+												"value": "@formatDateTime(variables('v_data_inicio_carga'), 'yyyy/MM/dd')",
+												"type": "Expression"
+											},
+											"p_esquema_origem": {
+												"value": "@json(item().parametro).esquema_origem",
+												"type": "Expression"
+											},
+											"p_tabela_origem": {
+												"value": "@json(item().parametro).tabela_origem",
+												"type": "Expression"
+											},
+											"p_select_origem": {
+												"value": "@json(item().parametro).select_origem",
+												"type": "Expression"
+											},
+											"p_data_inicio_carga": {
+												"value": "@variables('v_data_inicio_carga')",
+												"type": "Expression"
+											},
+											"p_rb_etapa_ingestao": {
+												"value": "@pipeline().parameters.p_rb_etapa_ingestao",
+												"type": "Expression"
+											},
+											"p_dt_inicio_execucao": {
+												"value": "@variables('v_data_inicio_carga')",
+												"type": "Expression"
+											},
+											"p_chave_entidade": {
+												"value": "@item().chave_entidade",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "SVB - Define data inicio carga",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "v_data_inicio_carga",
+										"value": {
+											"value": "@convertFromUtc(utcnow(), 'E. South America Standard Time', 'yyyy-MM-dd HH:mm:ss')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "FLT - Filtra Chave Entidade",
+						"description": "Utiliza o parâmetro \"p_rb_sistema_banco_entidade\" para decidir quais entidades serão carregadas.",
+						"type": "Filter",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.p_dados_orquestrador",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@if(\n    or(\n        empty(pipeline().parameters.p_rb_sistema_banco_entidade),\n        equals(pipeline().parameters.p_rb_sistema_banco_entidade, '.')\n    ),\n    true,\n    contains(\n        pipeline().parameters.p_rb_sistema_banco_entidade, \n        concat('[', item().chave_entidade, ']')\n    )\n)\n",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_data_inicio_carga": {
+						"type": "string"
+					},
+					"p_rb_sistema_banco_entidade": {
+						"type": "string"
+					},
+					"p_dados_orquestrador": {
+						"type": "array"
+					},
+					"p_rb_etapa_ingestao": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"v_data_inicio_carga": {
+						"type": "String"
+					},
+					"v_dt_ini_execucao": {
+						"type": "String"
+					},
+					"v_esquema_origem": {
+						"type": "String"
+					},
+					"v_tabela_origem": {
+						"type": "String"
+					},
+					"v_informacoes_arquivo_controle": {
+						"type": "Array"
+					},
+					"v_etapa_bronze": {
+						"type": "Boolean"
+					}
+				},
+				"folder": {
+					"name": "2.3 Raw e Bronze/1 - General"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-17T02:45:29Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/RB-U - Ingestao Generica - SQL Server')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SV-G - Processo Completo - Cliente e Conta')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "IFC - Perfil e Financeiro",
+						"description": "Se o parametro p_sv_tema conter a string \"perfil_financeiro\". Então True.",
+						"type": "IfCondition",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@or(\n    or(\n        empty(pipeline().parameters.p_sv_dominio_tema),\n        equals(pipeline().parameters.p_sv_dominio_tema,'.')\n     ),\n    contains(\n        toLower(pipeline().parameters.p_sv_dominio_tema),\n        '[perfil_financeiro]'\n      )\n)\n",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "PPL - Perfil_financeiro",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "FLT - Filtra Perfil e Financeiro",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "SV-G - Processo Total - Economico_financeiro - Cliente e Conta",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"p_caminho_raiz_notebook": {
+												"value": "@pipeline().parameters.p_caminho_raiz_notebook",
+												"type": "Expression"
+											},
+											"p_dominio": {
+												"value": "@concat(    \n    pipeline().parameters.p_dominio,     \n    '/perfil_financeiro'\n)",
+												"type": "Expression"
+											},
+											"p_dados_orquestrador": {
+												"value": "@activity('FLT - Filtra Perfil e Financeiro').output.value",
+												"type": "Expression"
+											},
+											"p_sv_dominio_tema_entidade": {
+												"value": "@pipeline().parameters.p_sv_dominio_tema_entidade",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "FLT - Filtra Perfil e Financeiro",
+									"type": "Filter",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"items": {
+											"value": "@pipeline().parameters.p_dados_orquestrador",
+											"type": "Expression"
+										},
+										"condition": {
+											"value": "@startswith(trim(item().chave_entidade), \n    concat(pipeline().parameters.p_dominio,\n'.perfil_financeiro')\n)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_caminho_raiz_notebook": {
+						"type": "string",
+						"defaultValue": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/silver"
+					},
+					"p_dominio": {
+						"type": "string",
+						"defaultValue": "cliente_conta"
+					},
+					"p_dados_orquestrador": {
+						"type": "array"
+					},
+					"p_sv_dominio_tema": {
+						"type": "string"
+					},
+					"p_sv_dominio_tema_entidade": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "2.2 Silver/Cliente e Conta/0 - Group"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-17T02:55:58Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/SV-G - Processo Total - Economico_financeiro - Cliente e Conta')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RB-G - Orquestra Ingestao - SqlServer')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "IFC - Ingere Core Financeiro",
+						"description": "Se o parâmetro \"p_rb_sistema_banco\" conter a string \"core_financeiro\" então True.",
+						"type": "IfCondition",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@contains(\n        toLower(pipeline().parameters.p_rb_sistema_banco),\n        '[sql_server.core_financeiro]'\n    )",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "PPL - Executa Core",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "FLT - Filtra Core",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "RB-G - Processo Generico - Raw e Bronze",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"p_data_inicio_carga": {
+												"value": "@pipeline().parameters.p_data_inicio_carga",
+												"type": "Expression"
+											},
+											"p_rb_sistema_banco_entidade": {
+												"value": "@pipeline().parameters.p_rb_sistema_banco_entidade",
+												"type": "Expression"
+											},
+											"p_dados_orquestrador": {
+												"value": "@activity('FLT - Filtra Core').output.value",
+												"type": "Expression"
+											},
+											"p_rb_etapa_ingestao": {
+												"value": "@pipeline().parameters.p_rb_etapa_ingestao",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "FLT - Filtra Core",
+									"type": "Filter",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"items": {
+											"value": "@pipeline().parameters.p_dados_orquestrador",
+											"type": "Expression"
+										},
+										"condition": {
+											"value": "@startswith(item().chave_entidade, 'sql_server.core_financeiro')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_data_inicio_carga": {
+						"type": "string"
+					},
+					"p_rb_sistema_banco": {
+						"type": "string"
+					},
+					"p_rb_sistema_banco_entidade": {
+						"type": "string"
+					},
+					"p_dados_orquestrador": {
+						"type": "array"
+					},
+					"p_rb_etapa_ingestao": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"v_etapa_bronze": {
+						"type": "Boolean"
+					},
+					"v_parametro_tabela_controle": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "2.3 Raw e Bronze/SQL Server/0 - Group"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-17T02:47:40Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/RB-G - Processo Generico - Raw e Bronze')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SV-G - Processo Total - Silver')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "IFC - Cliente e Conta",
+						"description": "Se o parametro p_sv_dominio conter a string \"cliente_conta\". Então True.",
+						"type": "IfCondition",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@or(\n    or(\n        empty(pipeline().parameters.p_sv_dominio),\n        equals(pipeline().parameters.p_sv_dominio,'.')\n     ),\n    contains(\n        toLower(pipeline().parameters.p_sv_dominio),\n        '[cliente_conta]'\n      )\n)\n",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "PPL - Cliente e Conta",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "FLT - Filtra Cliente e Conta",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "SV-G - Processo Completo - Cliente e Conta",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"p_caminho_raiz_notebook": {
+												"value": "@pipeline().parameters.p_caminho_raiz_notebook",
+												"type": "Expression"
+											},
+											"p_dominio": "cliente_conta",
+											"p_dados_orquestrador": {
+												"value": "@activity('FLT - Filtra Cliente e Conta').output.value",
+												"type": "Expression"
+											},
+											"p_sv_dominio_tema": {
+												"value": "@pipeline().parameters.p_sv_dominio_tema",
+												"type": "Expression"
+											},
+											"p_sv_dominio_tema_entidade": {
+												"value": "@pipeline().parameters.p_sv_dominio_tema_entidade",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "FLT - Filtra Cliente e Conta",
+									"type": "Filter",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"items": {
+											"value": "@pipeline().parameters.p_dados_orquestrador",
+											"type": "Expression"
+										},
+										"condition": {
+											"value": "@startswith(trim(item().chave_entidade), 'cliente_conta')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "IFC - Customer Sucess",
+						"description": "Se o parametro p_sv_dominio conter a string \"customer_sucess\". Então True.",
+						"type": "IfCondition",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@or(\n    or(\n        empty(pipeline().parameters.p_sv_dominio),\n        equals(pipeline().parameters.p_sv_dominio,'.')\n     ),\n    contains(\n        toLower(pipeline().parameters.p_sv_dominio),\n        '[customer_sucess]'\n      )\n)\n",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "PPL - Sustomer Sucess",
+									"description": "Chama o processo antigo do dominio customer_sucess",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "SV - User App - Web Application - Customer Success",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_caminho_raiz_notebook": {
+						"type": "string",
+						"defaultValue": "/Repos/fabio.br.santos@outlook.com/adb-bootcamp-prd-fbs/notebooks/delta/silver"
+					},
+					"p_sv_dominio": {
+						"type": "string"
+					},
+					"p_sv_dominio_tema": {
+						"type": "string"
+					},
+					"p_sv_dominio_tema_entidade": {
+						"type": "string"
+					},
+					"p_dados_orquestrador": {
+						"type": "array"
+					}
+				},
+				"folder": {
+					"name": "2.2 Silver/0 - Group"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-17T02:55:58Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/SV-G - Processo Completo - Cliente e Conta')]",
+				"[concat(variables('factoryId'), '/pipelines/SV - User App - Web Application - Customer Success')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RB-G - Processo Total - Raw e Bronze')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "IFC - Ingere do SQL Server",
+						"description": "Se o parâmetro p_rb_sistema_origem conter a string \"sql_server\" então True.",
+						"type": "IfCondition",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@or(\n    or(\n        empty(pipeline().parameters.p_rb_sistema),\n        equals(pipeline().parameters.p_rb_sistema,'.')\n    ),\n    contains(\n        toLower(pipeline().parameters.p_rb_sistema),\n        '[sql_server]'\n    )\n)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "FLT - Filtra SQL Server",
+									"type": "Filter",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"items": {
+											"value": "@pipeline().parameters.p_dados_orquestrador",
+											"type": "Expression"
+										},
+										"condition": {
+											"value": "@startswith(item().chave_entidade, 'sql_server')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "PPL - SQL Server",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "FLT - Filtra SQL Server",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "RB-G - Orquestra Ingestao - SqlServer",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"p_data_inicio_carga": {
+												"value": "@pipeline().parameters.p_data_inicio_carga",
+												"type": "Expression"
+											},
+											"p_rb_sistema_banco": {
+												"value": "@pipeline().parameters.p_rb_sistema_banco",
+												"type": "Expression"
+											},
+											"p_rb_sistema_banco_entidade": {
+												"value": "@pipeline().parameters.p_rb_sistema_banco_entidade",
+												"type": "Expression"
+											},
+											"p_dados_orquestrador": {
+												"value": "@activity('FLT - Filtra SQL Server').output.value",
+												"type": "Expression"
+											},
+											"p_rb_etapa_ingestao": {
+												"value": "@pipeline().parameters.p_rb_etapa_ingestao",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "IFC - Ingere de APIs",
+						"description": "Se o parâmetro p_rb_sistema_origem conter a string \"web_apis\" então True.",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "IFC - Ingere do SQL Server",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@or(\n    or(\n        empty(pipeline().parameters.p_rb_sistema),\n        equals(pipeline().parameters.p_rb_sistema,'.')\n    ),\n    contains(\n        toLower(pipeline().parameters.p_rb_sistema),\n        '[web_apis]'\n    )\n)",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "PPL - APIs",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "RB - Ingestao Generica - Dummy JS - Web API",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"p_data_inicio_carga": {
+						"type": "string"
+					},
+					"p_rb_sistema": {
+						"type": "string"
+					},
+					"p_rb_sistema_banco": {
+						"type": "string"
+					},
+					"p_rb_sistema_banco_entidade": {
+						"type": "string"
+					},
+					"p_rb_etapa_ingestao": {
+						"type": "string"
+					},
+					"p_dados_orquestrador": {
+						"type": "array"
+					}
+				},
+				"variables": {
+					"v_sistema_oracle": {
+						"type": "String"
+					},
+					"v_etapa_bronze": {
+						"type": "Boolean"
+					}
+				},
+				"folder": {
+					"name": "2.3 Raw e Bronze/0 - Group"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-17T02:47:40Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/RB-G - Orquestra Ingestao - SqlServer')]",
+				"[concat(variables('factoryId'), '/pipelines/RB - Ingestao Generica - Dummy JS - Web API')]"
+			]
+		}
+	]
+}

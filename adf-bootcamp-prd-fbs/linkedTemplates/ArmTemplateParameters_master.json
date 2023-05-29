@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-bootcamp-prd-fbs"
+		},
+		"ls_AzureSql_bootcamp_prd_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=sql-bootcamp-prd-fbs.database.windows.net;Initial Catalog=sqldb-bootcamp-prd-fbs;User ID=usr-bootcamp-prd-fbs"
+		},
+		"ls_dls_bootcamp_prd_accountKey": {
+			"value": ""
+		},
+		"ls_Http_Api_properties_typeProperties_url": {
+			"value": "https://dummyjson.com/users"
+		},
+		"ls_Webtable_bootcamp_prd_properties_typeProperties_url": {
+			"value": "https://www.dieese.org.br/analisecestabasica/salarioMinimo.html"
+		},
+		"ls_adb_bootcamp_prd_properties_typeProperties_existingClusterId": {
+			"value": "0507-192430-gzco5d8r"
+		},
+		"ls_dls_bootcamp_prd_properties_typeProperties_url": {
+			"value": "https://dlsbootcampprdfbs.dfs.core.windows.net/"
+		},
+		"ls_kv_bootcamp_prd_properties_typeProperties_baseUrl": {
+			"value": "https://kv-bootcamp-prd-fbs.vault.azure.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
