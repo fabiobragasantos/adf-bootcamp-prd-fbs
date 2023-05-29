@@ -768,39 +768,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_sql_azure')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_AzureSql_bootcamp_prd",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"p_esquema": {
-						"type": "string"
-					},
-					"p_tabela": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": {
-						"value": "@dataset().p_esquema",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@dataset().p_tabela",
-						"type": "Expression"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/ds_deltatable_databricks')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -833,6 +800,39 @@
 					}
 				},
 				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sql_azure')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_AzureSql_bootcamp_prd",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"p_esquema": {
+						"type": "string"
+					},
+					"p_tabela": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().p_esquema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().p_tabela",
+						"type": "Expression"
+					}
+				}
 			},
 			"dependsOn": []
 		},

@@ -274,7 +274,7 @@
 					},
 					"p_rb_sistema": {
 						"type": "string",
-						"defaultValue": "[[sql_server]"
+						"defaultValue": "[[sql_server],[web_apis]"
 					},
 					"p_rb_sistema_banco": {
 						"type": "string",
